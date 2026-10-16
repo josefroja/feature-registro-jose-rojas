@@ -1,11 +1,43 @@
-# KynWallet · Inicio de sesión (demo)
+# KynWallet · Inicio de sesión y registro (demo)
 
 Demostración funcional, solo del lado del cliente, de la pantalla de inicio de sesión de la
 billetera virtual KynWallet. Reproduce el diseño de Figma
 ([01 · Login](https://www.figma.com/design/f7uDsv8sh6ZOtK2OitTqtg/Billetera-Virtual---Prototipos?node-id=2-2)),
 valida los campos y simula la autenticación contra cuentas ficticias, sin backend ni base de datos.
 
-Especificación, plan y tareas: [`specs/001-login-billetera/`](specs/001-login-billetera/).
+También incluye la pantalla de registro
+([04 · Registro](https://www.figma.com/design/f7uDsv8sh6ZOtK2OitTqtg/Billetera-Virtual---Prototipos?node-id=31-2)),
+con validación de campos y un registro **simulado**.
+
+Especificación, plan y tareas: [`specs/001-login-billetera/`](specs/001-login-billetera/) y
+[`specs/002-registro-usuario/`](specs/002-registro-usuario/).
+
+## Rutas
+
+| Ruta        | Pantalla                                                |
+| ----------- | ------------------------------------------------------- |
+| `/login`    | Inicio de sesión                                        |
+| `/registro` | Registro de usuarios                                    |
+| `/` u otras | Redirigen a `/login` (sin añadir entradas al historial) |
+
+El enrutamiento es propio y mínimo (History API, sin dependencias). `npm run dev` y
+`npm run preview` ya sirven cualquier ruta con `index.html`; en un hosting estático real hay que
+configurar esa misma regla (_fallback_ de cualquier ruta a `index.html`).
+
+## Registro (simulado)
+
+⚠️ **No existe un backend de registro.** El registro es una simulación solo-cliente: espera un
+segundo y siempre tiene éxito (`src/infrastructure/SimulatedRegistrationGateway.ts`), no envía ni
+guarda ningún dato y **la cuenta «creada» no puede iniciar sesión** (el login solo acepta las
+cuentas de `VITE_DEMO_USERS`). Tras «registrarse» se redirige a `/login` con un aviso de éxito de
+un solo uso que vive en memoria (no en la URL, el historial ni el almacenamiento) y desaparece al
+recargar.
+
+Para conectar un servicio real, implementa el puerto `RegistrationGateway`
+(`src/application/ports/RegistrationGateway.ts`, contrato en
+[`specs/002-registro-usuario/contracts/registration-gateway.md`](specs/002-registro-usuario/contracts/registration-gateway.md))
+y cámbialo en `src/main.tsx`. El contrato del servicio (endpoint, formato) debe venir de su
+especificación; no está definido en este repositorio.
 
 ## Requisitos
 
@@ -51,13 +83,14 @@ Clean Architecture ligera. Las dependencias apuntan hacia el dominio y ESLint lo
 ```text
 src/
 ├── domain/          # Tipos, reglas de validación y textos. Sin React.
-├── application/     # Caso de uso `authenticate` y puerto `AuthGateway`
-├── infrastructure/  # `InMemoryAuthGateway` (simulación, 1 s) y `loadDemoAccounts`
+├── application/     # Casos de uso `authenticate` y `register`; puertos `AuthGateway` y `RegistrationGateway`
+├── infrastructure/  # `InMemoryAuthGateway`, `SimulatedRegistrationGateway` (simulaciones, 1 s) y `loadDemoAccounts`
 ├── ui/
 │   ├── styles/      # Tokens de Figma (`tokens.css`) y estilos globales
-│   ├── components/  # Button, TextField, PasswordField, Checkbox, SocialButton, Divider, Alert
-│   ├── layout/      # BrandPanel
-│   └── features/login/  # LoginScreen, LoginForm, WelcomeView, reducer y hook
+│   ├── components/  # Button, Link, TextField, PasswordField, Checkbox, SocialButton, Divider, Alert
+│   ├── layout/      # AuthLayout (dos paneles) y BrandPanel
+│   ├── navigation/  # NavigationProvider, useNavigation y rutas
+│   └── features/    # login/ (LoginScreen, LoginForm, WelcomeView…) y register/ (RegisterScreen, RegisterForm…)
 ├── App.tsx
 └── main.tsx         # Raíz de composición (inyección de dependencias)
 ```
@@ -73,5 +106,7 @@ requisito que verifica (por ejemplo, `US2-1`, `FR-012`) para mantener la trazabi
   en `src/ui/styles/tokens.css`). Detalle en `specs/001-login-billetera/research.md` (R3).
 - Los iconos de Google, Apple y del control de visibilidad son los marcadores de posición del
   diseño de Figma.
-- Fuera de alcance: recuperar contraseña, registro, acceso con Google/Apple, persistencia de
-  "Recordarme" y bloqueo por intentos fallidos. Al activarlos se muestra un aviso.
+- Fuera de alcance: recuperar contraseña, acceso con Google/Apple, persistencia de
+  "Recordarme", bloqueo por intentos fallidos, verificación de correo y detección de correos
+  duplicados. Al activar los elementos no disponibles se muestra un aviso («Próximamente» en el
+  registro).

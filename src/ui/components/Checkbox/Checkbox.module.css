@@ -1,7 +1,18 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .wrapper {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 0 4px;
+}
+
+.wrapper .box {
+  margin-right: 4px;
 }
 
 .box {
@@ -41,4 +52,15 @@
   font-weight: 500;
   color: var(--neutral-700);
   cursor: pointer;
+}
+
+.invalid {
+  border-color: var(--danger-600);
+}
+
+.error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--danger-600);
 }

@@ -28,6 +28,13 @@
   display: none;
 }
 
+/* FR-018: por debajo de 768px solo se muestra el formulario. */
+@media (max-width: 767px) {
+  .panel[data-hide-on-mobile='true'] {
+    display: none;
+  }
+}
+
 @media (min-width: 960px) {
   .panel {
     flex-direction: column;
@@ -103,5 +110,97 @@
     font-size: 13px;
     font-weight: 500;
     color: var(--on-brand-soft);
+  }
+}
+
+/* Frame «04 · Registro»: otro degradado y titular 52px más abajo (research R7). */
+.panel[data-variant='register'] {
+  background: var(--brand-gradient-signup);
+}
+
+@media (min-width: 960px) {
+  .panel[data-variant='register'] .headline {
+    gap: 6px;
+    transform: translateY(54px);
+  }
+
+  .panel[data-variant='register'] .title {
+    line-height: 52px;
+  }
+}
+
+/* Frame «04 · Registro»: logo de dos formas y tarjeta con las posiciones exactas de Figma. */
+.logoDots {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  width: 18px;
+  height: 28px;
+}
+
+.logoDot {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.logoDot2 {
+  position: absolute;
+  top: 12px;
+  left: 4px;
+}
+
+.panel[data-variant='register'] .logo {
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.panel[data-variant='register'] .logoText {
+  margin-top: 6px;
+}
+
+@media (min-width: 960px) {
+  .panel[data-variant='register'] .card {
+    position: relative;
+    display: block;
+    padding: 0;
+  }
+
+  .panel[data-variant='register'] .cardTop,
+  .panel[data-variant='register'] .cardBottom {
+    display: contents;
+  }
+
+  .panel[data-variant='register'] .cardName,
+  .panel[data-variant='register'] .chip,
+  .panel[data-variant='register'] .cardNumber,
+  .panel[data-variant='register'] .cardHolder,
+  .panel[data-variant='register'] .cardExpiry {
+    position: absolute;
+  }
+
+  .panel[data-variant='register'] .cardName {
+    top: 23px;
+    left: 25px;
+  }
+
+  .panel[data-variant='register'] .chip {
+    top: 19px;
+    right: -1px;
+  }
+
+  .panel[data-variant='register'] .cardNumber {
+    top: 103px;
+    left: 25px;
+  }
+
+  .panel[data-variant='register'] .cardHolder {
+    top: 173px;
+    left: 25px;
+  }
+
+  .panel[data-variant='register'] .cardExpiry {
+    top: 173px;
+    right: 13px;
   }
 }

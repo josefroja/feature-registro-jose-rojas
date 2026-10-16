@@ -5,18 +5,22 @@ import { Alert } from '@/ui/components/Alert/Alert';
 import { Button } from '@/ui/components/Button/Button';
 import { Checkbox } from '@/ui/components/Checkbox/Checkbox';
 import { Divider } from '@/ui/components/Divider/Divider';
+import { Link } from '@/ui/components/Link/Link';
 import { PasswordField } from '@/ui/components/PasswordField/PasswordField';
 import { SocialButton } from '@/ui/components/SocialButton/SocialButton';
 import { TextField } from '@/ui/components/TextField/TextField';
+import { ROUTES } from '@/ui/navigation/routes';
 import { useLoginForm } from './useLoginForm';
 import { WelcomeView } from './WelcomeView';
 import styles from './LoginForm.module.css';
 
 type LoginFormProps = {
   authenticate: Authenticate;
+  /** Aviso de éxito de un solo uso (p. ej. tras registrarse). */
+  successMessage?: string;
 };
 
-export function LoginForm({ authenticate }: LoginFormProps) {
+export function LoginForm({ authenticate, successMessage }: LoginFormProps) {
   const { state, change, blur, submit, logout, toggleRemember, showNotice } =
     useLoginForm(authenticate);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -48,6 +52,7 @@ export function LoginForm({ authenticate }: LoginFormProps) {
         <h1 className={styles.title}>Bienvenido de nuevo</h1>
         <p className={styles.subtitle}>Ingresa a tu cuenta para continuar</p>
       </div>
+      {successMessage && <Alert tone="success">{successMessage}</Alert>}
 
       <TextField
         label="Correo electrónico"
@@ -108,9 +113,7 @@ export function LoginForm({ authenticate }: LoginFormProps) {
 
       <p className={styles.footer}>
         ¿No tienes cuenta?
-        <Button variant="link" onClick={notAvailable}>
-          Regístrate
-        </Button>
+        <Link to={ROUTES.register}>Regístrate</Link>
       </p>
     </form>
   );

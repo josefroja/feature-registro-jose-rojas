@@ -38,3 +38,17 @@
     grid-template-columns: 620px 1fr;
   }
 }
+
+/* Frame «04 · Registro»: formulario anclado a 140px del borde superior y 200px del panel (research R7). */
+@media (min-width: 960px) {
+  .formPanel[data-form-align='top'] {
+    align-items: flex-start;
+    padding-top: 140px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .formPanel[data-form-align='top'] {
+    padding-right: 44px;
+  }
+}

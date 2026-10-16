@@ -1,12 +1,13 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createAuthStub } from '@/test/authStub';
+import { renderWithNavigation } from '@/test/renderWithNavigation';
 import { TEST_ACCOUNT } from '@/test/fixtures';
 import { LoginForm } from './LoginForm';
 
 function setup(stub = createAuthStub()) {
   const user = userEvent.setup();
-  render(<LoginForm authenticate={stub.authenticate} />);
+  renderWithNavigation(<LoginForm authenticate={stub.authenticate} />);
   const email = screen.getByLabelText('Correo electrónico');
   const password = screen.getByLabelText('Contraseña');
   const submit = () => user.click(screen.getByRole('button', { name: 'Iniciar sesión' }));
@@ -179,7 +180,7 @@ describe('LoginForm · US3 Validar los campos antes de enviar', () => {
 });
 
 describe('LoginForm · US5 Elementos del diseño fuera de alcance', () => {
-  it.each(['¿Olvidaste tu contraseña?', 'Google', 'Apple', 'Regístrate'])(
+  it.each(['¿Olvidaste tu contraseña?', 'Google', 'Apple'])(
     'US5-1: "%s" muestra el aviso y conserva los datos',
     async (name) => {
       const { user, stub, email, password } = setup();
@@ -218,7 +219,7 @@ describe('LoginForm · US5 Elementos del diseño fuera de alcance', () => {
       screen.getByRole('button', { name: 'Iniciar sesión' }),
       screen.getByRole('button', { name: 'Google' }),
       screen.getByRole('button', { name: 'Apple' }),
-      screen.getByRole('button', { name: 'Regístrate' }),
+      screen.getByRole('link', { name: 'Regístrate' }),
     ];
     for (const element of expected) {
       await user.tab();
@@ -260,5 +261,37 @@ describe('LoginForm · seguridad (FR-012)', () => {
 
     setItem.mockRestore();
     consoleSpies.forEach((spy) => spy.mockRestore());
+  });
+});
+
+describe('LoginForm · aviso de éxito del registro', () => {
+  it('US1-2/FR-012: successMessage se muestra con role="status"', () => {
+    renderWithNavigation(
+      <LoginForm
+        authenticate={createAuthStub().authenticate}
+        successMessage="Cuenta creada correctamente. Ya puedes iniciar sesión"
+      />,
+    );
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'Cuenta creada correctamente. Ya puedes iniciar sesión',
+    );
+  });
+
+  it('US1-2: sin successMessage no hay aviso de éxito', () => {
+    renderWithNavigation(<LoginForm authenticate={createAuthStub().authenticate} />);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+});
+
+describe('LoginForm · US5 navegación al registro', () => {
+  it('N5: «Regístrate» es un enlace hacia /registro', () => {
+    renderWithNavigation(<LoginForm authenticate={createAuthStub().authenticate} />);
+    expect(screen.getByRole('link', { name: 'Regístrate' })).toHaveAttribute('href', '/registro');
+  });
+
+  it('N5: activar «Regístrate» navega a /registro', async () => {
+    renderWithNavigation(<LoginForm authenticate={createAuthStub().authenticate} />);
+    await userEvent.click(screen.getByRole('link', { name: 'Regístrate' }));
+    expect(window.location.pathname).toBe('/registro');
   });
 });

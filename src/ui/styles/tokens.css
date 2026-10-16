@@ -18,9 +18,16 @@
   --danger-600: #c62828; /* 5.62:1: mensajes de error */
   --danger-50: #fdecea;
   --neutral-50: #f4f5f9;
+  --success-700: #166534; /* 6.49:1 sobre --success-50: aviso de éxito */
+  --success-50: #dcfce7;
 
   /* Valores sin variable en Figma */
   --brand-gradient: linear-gradient(121.19deg, #ff8a65 0%, #ef5226 70.71%);
+  --brand-gradient-signup: linear-gradient(
+    70.73deg,
+    #ff8a65 31.7%,
+    #ef5226 83.5%
+  ); /* frame 04 · Registro */
   --card-surface: rgba(255, 255, 255, 0.16);
   --card-border: rgba(255, 255, 255, 0.35);
   --card-chip: rgba(255, 217, 128, 0.9);
